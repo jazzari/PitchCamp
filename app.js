@@ -26,12 +26,12 @@ app.get('/campgrounds', async (req, res) => {
 });
 app.get('/campgrounds/new', (req, res) => {
     res.render('campgrounds/new');
-})
+});
 app.post('/campgrounds', async (req, res) => {
     const campground = new CampGround(req.body.campground);
     await campground.save();
     res.redirect(`campgrounds/${campground._id}`);
-})
+});
 app.get('/campgrounds/:id', async (req, res) => {
     const campground = await CampGround.findById(req.params.id);
     res.render('campgrounds/show', { campground });
@@ -39,12 +39,16 @@ app.get('/campgrounds/:id', async (req, res) => {
 app.get('/campgrounds/:id/edit', async (req, res) => {
     const campground = await CampGround.findById(req.params.id);
     res.render('campgrounds/edit', { campground });
-})
+});
 app.put('/campgrounds/:id', async (req, res) => {
     const { id } = req.params;
     const campground = await CampGround.findByIdAndUpdate(id, { ...req.body.campground }, { new: true });
     res.render('campgrounds/show', { campground });
-})
+});
+app.delete('/campgrounds/:id', async (req, res) => {
+    await CampGround.findByIdAndDelete(req.params.id);
+    res.redirect('/campgrounds');
+});
 
 app.listen(3000, () => {
     console.log('Serving on Port 3000');
