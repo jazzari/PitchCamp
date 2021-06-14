@@ -4,6 +4,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const CampGround = require('./models/campground');
 const methodOverride = require('method-override');
+const ejsMate = require('ejs-mate');
 mongoose.connect('mongodb://localhost:27017/pitch-camp', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, "connection error:"));
@@ -16,13 +17,14 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
+app.engine('ejs', ejsMate);
 
 app.get('/', (req, res) => {
     res.render('home');
 });
 app.get('/campgrounds', async (req, res) => {
     const campgrounds = await CampGround.find({});
-    res.render('campgrounds/index', { campgrounds });
+    res.render('campgrounds/index', { campgrounds, title: 'All Campgrounds' });
 });
 app.get('/campgrounds/new', (req, res) => {
     res.render('campgrounds/new');
@@ -34,11 +36,11 @@ app.post('/campgrounds', async (req, res) => {
 });
 app.get('/campgrounds/:id', async (req, res) => {
     const campground = await CampGround.findById(req.params.id);
-    res.render('campgrounds/show', { campground });
+    res.render('campgrounds/show', { campground, title: campground.title });
 });
 app.get('/campgrounds/:id/edit', async (req, res) => {
     const campground = await CampGround.findById(req.params.id);
-    res.render('campgrounds/edit', { campground });
+    res.render('campgrounds/edit', { campground, title: campground.title });
 });
 app.put('/campgrounds/:id', async (req, res) => {
     const { id } = req.params;
