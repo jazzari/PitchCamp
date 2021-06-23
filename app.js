@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const CampGround = require('./models/campground');
+const Review = require('./models/review');
 const methodOverride = require('method-override');
 const { campgroundSchema } = require('./schemas.js');
 const catchAsync = require('./utils/catchAsync');
@@ -64,6 +65,16 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     await CampGround.findByIdAndDelete(req.params.id);
     res.redirect('/campgrounds');
 }));
+
+app.post('/campgrounds/:id/reviews', catchAsync(async (req, res) => {
+    const campground = await CampGround.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
+}));
+
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404))
 })
