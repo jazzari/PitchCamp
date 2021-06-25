@@ -9,6 +9,8 @@ const { campgroundSchema, reviewSchema } = require('./schemas.js');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const ejsMate = require('ejs-mate');
+const { clearCache } = require('ejs');
+const campground = require('./models/campground');
 mongoose.connect('mongodb://localhost:27017/pitch-camp', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, "connection error:"));
@@ -83,17 +85,23 @@ app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res)
     await campground.save();
     res.redirect(`/campgrounds/${campground._id}`);
 }));
+app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await CampGround.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campgrounds/${id}`); 
+}));
 
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404))
-})
+});
 
 app.use((err, req, res, next) => {
     const { statusCode = 500 } = err;
     if(!err.message) err.message = 'Sorry, Something Went Wrong!'
     res.status(statusCode).render('error', { err });
-})
+});
 
 app.listen(3000, () => {
     console.log('Serving on Port 3000');
-})
+});
