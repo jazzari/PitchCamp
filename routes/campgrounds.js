@@ -9,11 +9,7 @@ const { isLoggedIn, isAuthor, validateCampground } = require('../middleware');
 
 router.route('/')
     .get(catchAsync(campgrounds.index))
-    // .post(isLoggedIn, validateCampground, catchAsync(campgrounds.create));
-    .post(upload.single('image'), (req, res) => {
-        console.log(req.body, req.file);
-        res.send('IT WORKED!');
-    });
+    .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(campgrounds.create));
 
 router.get('/new', isLoggedIn, campgrounds.newForm);
 
