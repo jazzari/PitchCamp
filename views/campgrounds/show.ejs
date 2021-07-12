@@ -118,6 +118,7 @@
 </div>
 
 <script>
-  mapToken = '<%-process.env.MAXBOX_TOKEN%>';
+  const mapToken = '<%-process.env.MAXBOX_TOKEN%>';
+  const campground = <%- JSON.stringify(campground.geometry.coordinates) %>;
 </script>
 <script src="/javascripts/showPageMap.js"></script>
