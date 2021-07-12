@@ -1,5 +1,8 @@
 const CampGround = require('../models/campground');
 const { cloudinary } = require('../Cloudinary');
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapboxToken = process.env.MAXBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
 module.exports.index = async (req, res) => {
     const campgrounds = await CampGround.find({});
@@ -10,13 +13,18 @@ module.exports.newForm = (req, res) => {
     res.render('campgrounds/new')};
 
 module.exports.create = async (req, res, next) => {
-    const campground = new CampGround(req.body.campground);
-    campground.images =  req.files.map(f => ({ url: f.path, filename: f.filename }));
-    campground.author = req.user._id;
-    await campground.save();
-    console.log(campground);
-    req.flash('success', 'Successfully made a new Campground!');
-    res.redirect(`campgrounds/${campground._id}`);
+    const geoData = await geocoder.forwardGeocode({
+        query: req.body.campground.location,
+        limit: 1
+    }).send();
+    res.send(geoData.body.features[0].geometry.coordinates);
+    // const campground = new CampGround(req.body.campground);
+    // campground.images =  req.files.map(f => ({ url: f.path, filename: f.filename }));
+    // campground.author = req.user._id;
+    // await campground.save();
+    // console.log(campground);
+    // req.flash('success', 'Successfully made a new Campground!');
+    // res.redirect(`campgrounds/${campground._id}`);
 };
 
 module.exports.show = async (req, res) => {
