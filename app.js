@@ -22,7 +22,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const { contentSecurityPolicy } = require('helmet');
 const MongoStore = require('connect-mongo');
-const dbUrl = 'mongodb://localhost:27017/pitch-camp';
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/pitch-camp';
 
 // 'mongodb://localhost:27017/pitch-camp'
 mongoose.connect(dbUrl, {
@@ -91,11 +91,13 @@ app.use(
     })
 );
 
+const secret = process.env.SECRET || 'thisshouldbeabettersecret';
+
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 60 * 60,
     crypto: {
-        secret: 'squirrel'
+        secret,
     }
 });
 store.on('error', function(e){
@@ -105,7 +107,7 @@ store.on('error', function(e){
 const sessionConfig = {
     store,
     name: 'lidia',
-    secret: 'thisshouldbeabettersecret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
