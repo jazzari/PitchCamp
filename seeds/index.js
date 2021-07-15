@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const CampGround = require('../models/campground');
 const cities = require('./cities');
 const { places, descriptors } = require('./seedHelpers');
+const DB_URL = process.env.DB_URL;
 mongoose.connect(DB_URL, {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true});
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, "connection error:"));
