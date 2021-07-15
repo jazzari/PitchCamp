@@ -8,6 +8,9 @@ const ImageSchema = new Schema({
 });
 ImageSchema.virtual('thumbnail').get(function() {
     return this.url.replace('/upload', '/upload/w_200');
+});
+ImageSchema.virtual('cardImage').get(function() {   
+    return this.url.replace('/upload', '/upload/ar_4:3,c_crop'); 
 })
 
 const opts = { toJSON: { virtuals: true } };
