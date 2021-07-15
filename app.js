@@ -21,10 +21,11 @@ const User = require('./models/user');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const { contentSecurityPolicy } = require('helmet');
-// const dbUrl = process.env.DB_URL;
+const MongoStore = require('connect-mongo');
+const dbUrl = 'mongodb://localhost:27017/pitch-camp';
 
 // 'mongodb://localhost:27017/pitch-camp'
-mongoose.connect('mongodb://localhost:27017/pitch-camp', {
+mongoose.connect(dbUrl, {
     useNewUrlParser: true, 
     useUnifiedTopology: true, 
     useCreateIndex: true,
@@ -90,7 +91,19 @@ app.use(
     })
 );
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: 'squirrel'
+    }
+});
+store.on('error', function(e){
+    console.log("SESSION STORE ERROR!!!", e);
+})
+
 const sessionConfig = {
+    store,
     name: 'lidia',
     secret: 'thisshouldbeabettersecret',
     resave: false,
