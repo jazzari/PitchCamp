@@ -38,7 +38,7 @@ const seedDB = async () => {
                   filename: 'PitchCamp/u2irwwyl9oc4elf87ei6'
                 },
                 {  
-                  url: 'https://res.cloudinary.com/dy4d5g7in/image/upload/v1625651198/PitchCamp/xngcvfe1spknlxvlkncp.jpg',
+                  url: 'https://res.cloudinary.com/dy4d5g7in/image/upload/v1626098773/PitchCamp/vrusfwx2xiunxpwlz8q2.jpg',
                   filename: 'PitchCamp/xngcvfe1spknlxvlkncp'
                 }
               ]
