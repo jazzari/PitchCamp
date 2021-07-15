@@ -21,7 +21,9 @@ const User = require('./models/user');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const { contentSecurityPolicy } = require('helmet');
+// const dbUrl = process.env.DB_URL;
 
+// 'mongodb://localhost:27017/pitch-camp'
 mongoose.connect('mongodb://localhost:27017/pitch-camp', {
     useNewUrlParser: true, 
     useUnifiedTopology: true, 
